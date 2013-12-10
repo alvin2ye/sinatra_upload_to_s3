@@ -1,0 +1,4 @@
+s3:
+  key: 'weiport'
+  secret: "222"
+  bucket: 'agideo-backup'
