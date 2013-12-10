@@ -1,5 +1,6 @@
 require 'rubygems' 
 require 'bundler'
+require 'yaml'
 Bundler.require
 
 CONFIG = YAML.load_file("config.yml")
