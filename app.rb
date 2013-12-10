@@ -6,17 +6,21 @@ CONFIG = YAML.load_file("config.yml")
 
 get '/' do
   return %Q{
+    <html>
+    <body>
     <form action="upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
       <div>
         <input type="file" name="file" value="" id="file">
       </div>
       <div>
-        <input type="text" name="prefix" value="" id="prefix">
+        Prefix <input type="text" name="prefix" value="" id="prefix">
       </div>
       <div>
-        <input type="submit" value="Upload &uarr;">
+        <input type="submit" value="Upload">
       </div>
     </form>
+    </body>
+    </html>
   }
 end
  
