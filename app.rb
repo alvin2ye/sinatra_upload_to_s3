@@ -42,6 +42,6 @@ class App < Sinatra::Base
     # :access => :public_read
     )
 
-    return "success"
+    return "success, #{remote_name}"
   end
 end
