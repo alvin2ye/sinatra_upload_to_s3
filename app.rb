@@ -49,7 +49,7 @@ class App < Sinatra::Base
   
   def prefix
     prefix = "_" if params[:prefix].nil? || params[:prefix].size == 0
-    params[:public] == "on" ? "public/#{prefix}" ? prefix
+    params[:public] == "on" ? "public/#{prefix}" : prefix
   end
   
   def bucket
