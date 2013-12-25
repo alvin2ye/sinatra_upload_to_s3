@@ -4,8 +4,14 @@ require 'yaml'
 Bundler.require
 
 CONFIG = YAML.load_file("config.yml")
+
+
 class App < Sinatra::Base
   get '/' do
+    "404"
+  end
+  
+  get '/up' do
     return %Q{
       <html>
       <body>
@@ -17,7 +23,7 @@ class App < Sinatra::Base
       Prefix <input type="text" name="prefix" value="" id="prefix">
       </p>
       <p>
-      public <input type="checkbox" name="public" id="public">
+      Public <input type="checkbox" name="public" id="public">
       </p>
       <p>
       <input type="submit" value="Upload">
@@ -29,24 +35,30 @@ class App < Sinatra::Base
   end
  
   post '/upload' do
-    file       = params[:file][:tempfile]
-    filename   = params[:file][:filename]
-    prefix     = params[:public] == "on" ? "public" : params[:prefix]
-
-    remote_name = "#{prefix}/#{Time.now.to_i}_#{filename}".gsub(" ", "_")
-      
     AWS::S3::Base.establish_connection!(
       :access_key_id     => CONFIG["s3"]["key"],
       :secret_access_key => CONFIG["s3"]["secret"]
     )
     
-    AWS::S3::S3Object.store(
-      remote_name,
-      open(file.path),
-      CONFIG["s3"]["bucket"],
-      :access => params[:public] == "on" ? :public_read : :private
-    )
-    
-    return "success, #{remote_name}"
+    file       = params[:file][:tempfile]
+    filename   = params[:file][:filename]
+    remote_name = "#{prefix}/#{Time.now.to_i}_#{filename}".gsub(" ", "_")
+    AWS::S3::S3Object.store(remote_name, open(file.path), bucket, :access => access_perm)
+    return params[:public] == "on" ? "success, http://agi-backups.s3.amazonaws.com/#{remote_name}" : "success"
+  end
+  
+  
+  def prefix
+    return "public" if params[:public] == "on"
+    return "_" if params[:prefix].empty?
+    params[:prefix]
+  end
+  
+  def bucket
+    CONFIG["s3"]["bucket"]
+  end
+  
+  def access_perm
+    params[:public] == "on" ? :public_read : :private
   end
 end
