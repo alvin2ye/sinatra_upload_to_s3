@@ -48,7 +48,8 @@ class App < Sinatra::Base
   end
   
   def prefix
-    prefix = "_" if params[:prefix].nil? || params[:prefix].size == 0
+    prefix = params[:prefix]
+    prefix = "_" if prefix.nil? || prefix.size == 0
     params[:public] == "on" ? "public/#{prefix}" : prefix
   end
   
