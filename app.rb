@@ -10,15 +10,18 @@ class App < Sinatra::Base
       <html>
       <body>
       <form action="upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-      <div>
+      <p>
       <input type="file" name="file" value="" id="file">
-      </div>
-      <div>
+      </p>
+      <p>
       Prefix <input type="text" name="prefix" value="" id="prefix">
-      </div>
-      <div>
+      </p>
+      <p>
+      public <input type="checkbox" name="public" id="public">
+      </p>
+      <p>
       <input type="submit" value="Upload">
-      </div>
+      </p>
       </form>
       </body>
       </html>
@@ -28,20 +31,22 @@ class App < Sinatra::Base
   post '/upload' do
     file       = params[:file][:tempfile]
     filename   = params[:file][:filename]
-    prefix     = params[:prefix]
-    remote_name = "#{prefix}/#{Time.now.to_i}_#{filename}"
-  
-    AWS::S3::Base.establish_connection!(
-    :access_key_id     => CONFIG["s3"]["key"],
-    :secret_access_key => CONFIG["s3"]["secret"]
-    )
-    AWS::S3::S3Object.store(
-    "#{prefix}/#{Time.now.to_i}_#{filename}",
-    open(file.path),
-    CONFIG["s3"]["bucket"]
-    # :access => :public_read
-    )
+    prefix     = params[:public] == "on" ? "public" : params[:prefix]
 
+    remote_name = "#{prefix}/#{Time.now.to_i}_#{filename}".gsub(" ", "_")
+      
+    AWS::S3::Base.establish_connection!(
+      :access_key_id     => CONFIG["s3"]["key"],
+      :secret_access_key => CONFIG["s3"]["secret"]
+    )
+    
+    AWS::S3::S3Object.store(
+      remote_name,
+      open(file.path),
+      CONFIG["s3"]["bucket"],
+      :access => params[:public] == "on" ? :public_read : :private
+    )
+    
     return "success, #{remote_name}"
   end
 end
