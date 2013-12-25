@@ -47,11 +47,9 @@ class App < Sinatra::Base
     return params[:public] == "on" ? "success, http://agi-backups.s3.amazonaws.com/#{remote_name}" : "success"
   end
   
-  
   def prefix
-    return "public" if params[:public] == "on"
-    return "_" if params[:prefix].empty?
-    params[:prefix]
+    prefix = "_" if params[:prefix].nil? || params[:prefix].size == 0
+    params[:public] == "on" ? "public/#{prefix}" ? prefix
   end
   
   def bucket
