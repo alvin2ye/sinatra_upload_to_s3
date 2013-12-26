@@ -44,7 +44,7 @@ class App < Sinatra::Base
     filename   = params[:file][:filename]
     remote_name = "#{prefix}/#{Time.now.to_i}_#{filename}".gsub(" ", "_")
     AWS::S3::S3Object.store(remote_name, open(file.path), bucket, :access => access_perm)
-    return params[:public] == "on" ? "success, http://agi-backups.s3.amazonaws.com/#{remote_name}" : "success"
+    return params[:public] == "on" ? "success, #{cdn_url(remote_name)}" : "success"
   end
   
   def prefix
@@ -59,5 +59,12 @@ class App < Sinatra::Base
   
   def access_perm
     params[:public] == "on" ? :public_read : :private
+  end
+  
+  def cdn_url(remote_name)
+    # http://agi-backups.s3.amazonaws.com/public/1/1388022618_1.png
+    # remote_name :  public/1/1388022618_1.png
+    # result http://agi-public2.u.qiniudn.com/1/1388022618_1.png
+    "http://agi-public2.u.qiniudn.com" + remote_name.gsub(/^public/, "")
   end
 end
