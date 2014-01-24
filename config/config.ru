@@ -2,8 +2,7 @@ require 'rubygems'
 require 'bundler'
 require 'yaml'
 Bundler.require
+$:.unshift(File.dirname(__FILE__) + "/../") 
 
-# p File.join(File.dirname(__FILE__), '../app.rb')
-require '/Users/alvin/Projects/sinatra_upload_to_s3/app.rb'
-
+require 'app.rb'
 run App
