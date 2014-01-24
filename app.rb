@@ -7,6 +7,8 @@ CONFIG = YAML.load_file("config/config.yml")
 
 
 class App < Sinatra::Base
+  set :protection, :except => :frame_options
+  
   get '/' do
     "agideo.com"
   end
