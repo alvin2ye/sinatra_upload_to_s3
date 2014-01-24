@@ -1,0 +1,11 @@
+--- 
+environment: production
+chdir: /Users/alvin/Projects/sinatra_upload_to_s3
+pid: tmp/thin.pid 
+rackup: config/config.ru 
+log: log/thin.log 
+max_conns: 1024
+port: 4568
+timeout: 30 
+max_persistent_conns: 512 
+daemonize: true

@@ -1,3 +1,4 @@
 config.yml
 tmp/thin.log
 tmp/thin.pid
+thin.log

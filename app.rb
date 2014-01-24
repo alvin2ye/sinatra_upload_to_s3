@@ -3,12 +3,12 @@ require 'bundler'
 require 'yaml'
 Bundler.require
 
-CONFIG = YAML.load_file("config.yml")
+CONFIG = YAML.load_file("config/config.yml")
 
 
 class App < Sinatra::Base
   get '/' do
-    "404"
+    "agideo.com"
   end
   
   get '/up' do
