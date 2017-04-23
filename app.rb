@@ -21,12 +21,14 @@ class App < Sinatra::Base
       <p>
       <input type="file" name="file" value="" id="file">
       </p>
+      <div style="display: #{params[:hide] ? "none" : ""}">
       <p>
       Prefix <input type="text" name="prefix" value="#{params[:prefix]}" id="prefix">
       </p>
       <p>
       Public <input type="checkbox" name="public" id="public" #{params[:public] ? 'checked=checked' : ''}  >
       </p>
+      </div>
       <p>
       <input type="submit" value="Upload">
       </p>
@@ -47,9 +49,9 @@ class App < Sinatra::Base
     remote_name = "#{prefix}/#{Time.now.to_i}_#{filename}".gsub(" ", "_")
     AWS::S3::S3Object.store(remote_name, open(file.path), bucket, :access => access_perm)
     
-    text = params[:public] == "on" ? "success, #{cdn_url(remote_name)}" : "success"
+    text = params[:public] == "on" ? "success, <br/>#{cdn_url(remote_name)}" : "success"
     
-    text = text + ' <input action="action" type="button" value="Back" onclick="history.go(-1);" />'
+    text = text + '<br /> <input action="action" type="button" value="Back" onclick="history.go(-1);" />'
     
     return text
   end
